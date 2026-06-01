@@ -29,6 +29,8 @@ def remux_audio(video_path: Path, audio_path: Path, output_path: Path) -> Path:
     command = [
         "ffmpeg",
         "-y",
+        "-stream_loop",
+        "-1",
         "-i",
         str(video_path),
         "-i",
@@ -112,15 +114,12 @@ def main() -> int:
             OPENROUTER_DIR / "rufis" / "club_celestials_escenas_rufis_short.mp3",
             work_dir / "02_rufis.mp4",
         ),
+        (
+            OPENROUTER_DIR / "serratin" / "club_celestials_escenas_serratin_openrouter_raw.mp4",
+            OPENROUTER_DIR / "serratin" / "club_celestials_escenas_serratin_short.mp3",
+            work_dir / "03_serratin.mp4",
+        ),
     ]
-    if args.include_serratin:
-        sources.append(
-            (
-                CELESTIALS_DIR / "serratin" / "club_celestials_escenas_serratin_liveportrait.mp4",
-                OPENROUTER_DIR / "serratin" / "club_celestials_escenas_serratin_short.mp3",
-                work_dir / "03_serratin.mp4",
-            )
-        )
 
     normalized = []
     for video_path, audio_path, output_clip in sources:
