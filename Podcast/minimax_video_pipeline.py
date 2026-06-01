@@ -246,6 +246,8 @@ def remux_audio(video_path: Path, audio_path: Path, output_path: Path) -> None:
     command = [
         "ffmpeg",
         "-y",
+        "-stream_loop",
+        "-1",
         "-i",
         str(video_path),
         "-i",
