@@ -135,6 +135,43 @@ Ejecutar el runner de LivePortrait por escena o para todas.
 ### 6. Componer el video final
 Usar el compositor una vez que los tres renders estén correctos.
 
+## Ruta alternativa: OpenRouter / MiniMax Hailuo
+
+Se agregó `minimax_video_pipeline.py` para probar una segunda ruta de generación con OpenRouter usando `minimax/hailuo-2.3`, sin reemplazar LivePortrait.
+
+La idea es:
+
+- usar la imagen versionada en GitHub como primer frame de referencia
+- enviar cada personaje como prompt enfocado en su posición dentro de la imagen
+- conservar el prompt/personaje por escena
+- guardar resultados en `Podcast/_generated_assets/openrouter_scenes/`
+
+Variables necesarias en `.env` o `Podcast/.env`:
+
+```env
+OPENROUTER_API_KEY=tu_api_key_de_openrouter
+OPENROUTER_VIDEO_MODEL=minimax/hailuo-2.3
+OPENROUTER_REFERENCE_IMAGE_URL=https://raw.githubusercontent.com/JRavenelco/Animaciones_IA/master/Podcast/trio_de_amigos.jpg
+```
+
+Crear solo el plan, sin gastar créditos:
+
+```powershell
+py -3.12 c:\Users\jesus\Documents\CEROC\Podcast\minimax_video_pipeline.py
+```
+
+Crear tarea pagada para una escena:
+
+```powershell
+py -3.12 c:\Users\jesus\Documents\CEROC\Podcast\minimax_video_pipeline.py --scene fer --submit
+```
+
+Crear tarea y esperar descarga del MP4:
+
+```powershell
+py -3.12 c:\Users\jesus\Documents\CEROC\Podcast\minimax_video_pipeline.py --scene fer --submit --wait
+```
+
 ## Comandos útiles
 
 ### Ejecutar una sola escena
