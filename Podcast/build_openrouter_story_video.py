@@ -15,6 +15,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--include-serratin", action="store_true")
+    parser.add_argument("--pause-duration", type=float, default=0.65)
     return parser.parse_args()
 
 
@@ -77,6 +78,33 @@ def normalize_clip(input_path: Path, output_path: Path) -> Path:
     return output_path
 
 
+def build_pause(output_path: Path, duration: float) -> Path:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    command = [
+        "ffmpeg",
+        "-y",
+        "-f",
+        "lavfi",
+        "-i",
+        "color=c=black:s=1920x1080:r=24",
+        "-f",
+        "lavfi",
+        "-i",
+        "anullsrc=channel_layout=stereo:sample_rate=44100",
+        "-t",
+        str(duration),
+        "-c:v",
+        "libx264",
+        "-pix_fmt",
+        "yuv420p",
+        "-c:a",
+        "aac",
+        str(output_path),
+    ]
+    run_command(command, output_path.parent)
+    return output_path
+
+
 def concat_clips(clips: list[Path], output_path: Path) -> Path:
     list_path = output_path.parent / "openrouter_story_concat.txt"
     lines = [f"file '{clip.as_posix()}'" for clip in clips]
@@ -122,7 +150,7 @@ def main() -> int:
     ]
 
     normalized = []
-    for video_path, audio_path, output_clip in sources:
+    for index, (video_path, audio_path, output_clip) in enumerate(sources):
         if not video_path.exists():
             raise FileNotFoundError(f"No encontré video: {video_path}")
         if not audio_path.exists():
@@ -130,6 +158,8 @@ def main() -> int:
         remuxed = output_clip.with_name(output_clip.stem + "_remux.mp4")
         remux_audio(video_path, audio_path, remuxed)
         normalized.append(normalize_clip(remuxed, output_clip))
+        if args.pause_duration > 0 and index < len(sources) - 1:
+            normalized.append(build_pause(work_dir / f"pause_{index + 1:02d}.mp4", args.pause_duration))
 
     concat_clips(normalized, output_path)
     print(f"Video story listo: {output_path}")

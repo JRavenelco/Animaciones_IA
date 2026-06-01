@@ -24,15 +24,15 @@ DEFAULT_VOICES = {
 }
 
 SHORT_LINES = {
-    "fer": "¡Hola! Soy Fer, la chispa del Club Celestials. Hoy venimos a brillar contigo.",
-    "rufis": "Yo soy Rufis, el angelito del equipo. Traigo risas, alas y mucha buena vibra.",
-    "serratin": "Y yo soy Serratín. Juntos hacemos magia, amistad y aventuras inolvidables.",
+    "fer": "¡Hola! Soy Fer. Hoy el Club Celestials viene a brillar contigo.",
+    "rufis": "Yo soy Rufis. Traigo risas, alas y mucha buena vibra.",
+    "serratin": "Y yo soy Serratín. Juntos hacemos magia y aventuras.",
 }
 
 VOICE_SETTINGS = {
-    "fer": {"stability": 0.38, "similarity_boost": 0.82, "style": 0.18, "use_speaker_boost": True},
-    "rufis": {"stability": 0.48, "similarity_boost": 0.76, "style": 0.12, "use_speaker_boost": True},
-    "serratin": {"stability": 0.46, "similarity_boost": 0.76, "style": 0.10, "use_speaker_boost": True},
+    "fer": {"stability": 0.28, "similarity_boost": 0.72, "style": 0.42, "use_speaker_boost": True},
+    "rufis": {"stability": 0.30, "similarity_boost": 0.70, "style": 0.36, "use_speaker_boost": True},
+    "serratin": {"stability": 0.32, "similarity_boost": 0.70, "style": 0.34, "use_speaker_boost": True},
 }
 
 

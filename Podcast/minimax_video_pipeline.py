@@ -25,6 +25,11 @@ DEFAULT_PLAN = OPENROUTER_DIR / "openrouter_video_job.json"
 DEFAULT_REFERENCE_IMAGE_URL = (
     "https://raw.githubusercontent.com/JRavenelco/Animaciones_IA/master/Podcast/trio_de_amigos.jpg"
 )
+SCENE_REFERENCE_IMAGE_URLS = {
+    "fer": "https://raw.githubusercontent.com/JRavenelco/Animaciones_IA/master/Podcast/reference_frames/fer.jpg",
+    "rufis": "https://raw.githubusercontent.com/JRavenelco/Animaciones_IA/master/Podcast/reference_frames/rufis.jpg",
+    "serratin": "https://raw.githubusercontent.com/JRavenelco/Animaciones_IA/master/Podcast/reference_frames/serratin.jpg",
+}
 
 OPENROUTER_API_BASE = "https://openrouter.ai/api/v1"
 
@@ -33,25 +38,25 @@ load_local_env(BASE_DIR)
 
 SCENE_PROMPTS = {
     "fer": (
-        "Use the attached first frame as the exact visual reference. Focus on the center girl, Fer, "
-        "the red-haired cute mischievous little devil girl. Keep the same face, hairstyle, horns, outfit, "
-        "colors, friendly child-safe cartoon style, and celestial cloud background. She smiles and speaks "
-        "to camera with playful warm energy. Gentle blinking, subtle head movement, expressive eyes, natural "
-        "mouth movement, hands on hips, no character redesign, no outfit change. [Static shot]"
+        "Use the attached first frame as the exact visual reference for a solo speaking shot. Fer is the only "
+        "speaker. Only Fer moves her lips. Keep the same face, hairstyle, horns, outfit, colors, friendly "
+        "child-safe cartoon style, and celestial cloud background. She speaks naturally to camera with playful "
+        "warm energy, gentle blinking, subtle head movement, expressive eyes, and small hand gestures. No other "
+        "character should speak or move lips. No redesign, no outfit change. [Static shot]"
     ),
     "rufis": (
-        "Use the attached first frame as the exact visual reference. Focus on the left boy, Rufis, "
-        "the blonde cute joyful little angel with glasses, halo, and wings. Keep the same face, hair, outfit, "
-        "colors, friendly child-safe cartoon style, and celestial cloud background. He smiles and speaks "
-        "to camera with bright cheerful energy. Gentle blinking, subtle head movement, expressive eyes, natural "
-        "mouth movement, small upbeat gesture, no character redesign, no outfit change. [Static shot]"
+        "Use the attached first frame as the exact visual reference for a solo speaking shot. Rufis is the only "
+        "speaker. Only Rufis moves his lips. Keep the same face, blonde hair, glasses, halo, wings, outfit, "
+        "colors, friendly child-safe cartoon style, and celestial cloud background. He speaks naturally to camera "
+        "with bright cheerful energy, gentle blinking, subtle head movement, expressive eyes, and a small upbeat "
+        "gesture. No other character should speak or move lips. No redesign, no outfit change. [Static shot]"
     ),
     "serratin": (
-        "Use the attached first frame as the exact visual reference. Focus on the right boy, Serratín, "
-        "the charming celestial angel boy with brown hair, halo, wings, and white outfit. Keep the same face, "
-        "outfit, colors, friendly child-safe cartoon style, and celestial cloud background. He smiles and speaks "
-        "to camera with warm charismatic energy. Gentle blinking, subtle head movement, expressive eyes, natural "
-        "mouth movement, small wave gesture, no character redesign, no outfit change. [Static shot]"
+        "Use the attached first frame as the exact visual reference for a solo speaking shot. Serratín is the only "
+        "speaker. Only Serratín moves his lips. Keep the same face, brown hair, halo, wings, white outfit, colors, "
+        "friendly child-safe cartoon style, and celestial cloud background. He speaks naturally to camera with warm "
+        "charismatic energy, gentle blinking, subtle head movement, expressive eyes, and a small wave gesture. No "
+        "other character should speak or move lips. No redesign, no outfit change. [Static shot]"
     ),
 }
 
@@ -124,7 +129,7 @@ def build_plan(manifest: dict[str, Any], args: argparse.Namespace) -> dict[str, 
             {
                 "scene": scene_key,
                 "label": scene.get("label"),
-                "reference_image_url": args.reference_image_url,
+                "reference_image_url": scene_reference_image_url(scene_key, args.reference_image_url),
                 "local_source_image": scene.get("image_file"),
                 "speech_audio": scene.get("audio_file") or default_scene_audio(scene_key, title),
                 "compose_box_rel": scene.get("compose_box_rel"),
@@ -146,12 +151,16 @@ def build_plan(manifest: dict[str, Any], args: argparse.Namespace) -> dict[str, 
         "mode": "image_to_video",
         "notes": [
             "Usa OpenRouter desde el inicio con el modelo minimax/hailuo-2.3.",
-            "La imagen de referencia por defecto es la copia versionada en GitHub: Podcast/trio_de_amigos.jpg.",
+            "Usa una imagen de referencia versionada por personaje para que solo hable quien corresponde.",
             "Por defecto este script solo crea el plan; usa --submit para gastar créditos de OpenRouter.",
             "Después puedes remuxear audio con ffmpeg usando speech_audio si el clip generado no trae voz utilizable.",
         ],
         "jobs": jobs,
     }
+
+
+def scene_reference_image_url(scene_key: str, fallback_url: str) -> str:
+    return SCENE_REFERENCE_IMAGE_URLS.get(scene_key) or fallback_url
 
 
 def default_scene_audio(scene_key: str, title: str) -> str | None:
